@@ -273,5 +273,27 @@ InstructionSearchApi().getBinarySearchString(currentProgram,currentSelection.get
 
 - ... or remove the `Instructions` bulker ... because it is kind of useless without masking.
 
+## How do I build it for the latest version of Ghidta?
 
+```bash
+mkdir workdir
+cd workdir
+wget https://github.com/NationalSecurityAgency/ghidra/releases/download/Ghidra_10.1.3_build/ghidra_10.1.3_PUBLIC_20220421.zip
+unzip ghidra_10.1.3_PUBLIC_20220421.zip
+git clone git@github.com:clearbluejar/ghidra-patchdiff-correlator.git
+docker run -it --rm -v $PWD/workdir:/out dukebarman/ghidra-builder
+```
 
+From within the container:
+```bash
+cd /workdir
+cd ghidra-patchdiff-correlator/PatchDiffCorrelator/
+gradle -PGHIDRA_INSTALL_DIR=/workdir/ghidra_10.1.3_PUBLIC
+```
+
+New file should be available in dir:
+```bash
+dockerbot@f46c4b6c8ce1:/out/out/ghidra-patchdiff-correlator/PatchDiffCorrelator$ find dist
+dist
+PatchDiffCorrelator/dist/ghidra_10.1.3_PUBLIC_20220518_PatchDiffCorrelator.zip
+```
