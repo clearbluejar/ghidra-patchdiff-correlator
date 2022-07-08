@@ -66,7 +66,7 @@ jobs:
       - name: Release on GitHub
         uses: softprops/action-gh-release@v1
         with:
-          files: ./dist/*
-          tag_name: "v0.5-${{ needs.check-release.outputs.ghidra-latest-ver }}"
+          files: ./dist/PatchDiffCorrelator
+          tag_name: "PatchDiffCorrelator-${{ needs.check-release.outputs.ghidra-latest-ver }}"
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
