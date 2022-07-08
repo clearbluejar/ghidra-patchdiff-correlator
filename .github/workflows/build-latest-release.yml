@@ -1,0 +1,72 @@
+name: Publish Release for each Ghidra Build
+
+on:
+#  push:
+#    tags:
+#      - 'v*.*.*'
+  workflow_dispatch:
+  schedule:
+    - cron: "0 13 * * 3"
+    
+
+jobs:
+
+  check-release:
+    runs-on: ubuntu-20.04
+    outputs:
+      ghidra-repo-release: ${{ steps.get_ghidra_ver.outputs.release }}
+      ghidra-latest-ver: ${{ steps.format_ghidra_ver.outputs.ghidra_ver }}
+      self-release: ${{ steps.self.outputs.release }}
+      already-exists: ${{ contains( steps.format_ghidra_ver.outputs.ghidra_ver, steps.self.outputs.release) }}
+    steps:
+      - name: Get Latest Ghidra Version
+        id: get_ghidra_ver
+        uses: pozetroninc/github-action-get-latest-release@v0.6.0
+        with:
+          repository: NationalSecurityAgency/ghidra
+          excludes: prerelease, draft
+      - id: self
+        uses: pozetroninc/github-action-get-latest-release@v0.6.0
+        with:
+          repository: ${{ github.repository }}
+      - name: Format Ghidra Version
+        id: format_ghidra_ver
+        run: |
+          ghidra_ver=$(echo ${{steps.get_ghidra_ver.outputs.release}} | cut -d_ -f2)
+          echo "::set-output name=ghidra_ver::$ghidra_ver"
+      - name: Print Versions
+        run: |
+          echo "${{steps.format_ghidra_ver.outputs.ghidra_ver}}  ${{steps.self.outputs.release }}"
+          echo "already exists ${{contains( steps.format_ghidra_ver.outputs.ghidra_ver, steps.self.outputs.release) }}"
+      
+      
+
+  build-n-publish:
+    needs: 
+      - check-release
+    if: needs.check-release.outputs.already-exists == 'false'
+    name: Build Patch Diff Correlator Against Latest Ghidra
+    runs-on: ubuntu-20.04
+    steps:
+      - uses: actions/checkout@v2
+      - name: Set up JDK 1.11
+        uses: actions/setup-java@v1
+        with:
+          java-version: 1.11
+
+      - uses: er28-0652/setup-ghidra@master
+        with:
+          version: "${{ needs.check-release.outputs.ghidra-latest-ver }}"
+
+      - name: Build Using Gradle
+        run: |
+          cd PatchDiffCorrelator
+          gradle -PGHIDRA_INSTALL_DIR=$GHIDRA_INSTALL_DIR
+
+      - name: Release on GitHub
+        uses: softprops/action-gh-release@v1
+        with:
+          files: ./dist/*
+          tag_name: "v0.5-${{ needs.check-release.outputs.ghidra-latest-ver }}"
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
