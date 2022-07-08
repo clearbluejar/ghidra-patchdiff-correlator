@@ -62,11 +62,12 @@ jobs:
         run: |
           cd PatchDiffCorrelator
           gradle -PGHIDRA_INSTALL_DIR=$GHIDRA_INSTALL_DIR
+          find .
 
       - name: Release on GitHub
         uses: softprops/action-gh-release@v1
         with:
-          files: ./dist/PatchDiffCorrelator
+          files: ./PatchDiffCorrelator/dist/*
           tag_name: "PatchDiffCorrelator-${{ needs.check-release.outputs.ghidra-latest-ver }}"
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
