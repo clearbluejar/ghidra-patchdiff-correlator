@@ -27,15 +27,15 @@ public class ColorProgramCorrelator extends VTAbstractProgramCorrelator {
 	private final FunctionColorer colorer;
 	private final ColorizingService colorService;
 
-	public ColorProgramCorrelator(ServiceProvider serviceProvider, Program sourceProgram,
+	public ColorProgramCorrelator(Program sourceProgram,
 			AddressSetView sourceAddressSet, Program destinationProgram, AddressSetView destinationAddressSet,
 			ToolOptions options, String name, FunctionColorer colorer) {
-		super(serviceProvider, sourceProgram, sourceAddressSet, destinationProgram,
+		super(sourceProgram, sourceAddressSet, destinationProgram,
 				destinationAddressSet, options);
 		this.name = name;
 		this.colorer = colorer;
 		// FIXME: colorService is null
-		this.colorService = serviceProvider.getService(ColorizingService.class);
+		this.colorService = null;
 	}
 
 	@Override

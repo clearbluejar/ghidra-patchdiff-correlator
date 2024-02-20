@@ -13,7 +13,6 @@ import static patchdiffcorrelator.AbstractBulkProgramCorrelatorFactory.*;
 import ghidra.feature.vt.api.main.*;
 import ghidra.feature.vt.api.util.VTAbstractProgramCorrelator;
 import ghidra.framework.options.ToolOptions;
-import ghidra.framework.plugintool.ServiceProvider;
 import ghidra.program.model.address.Address;
 import ghidra.program.model.address.AddressSetView;
 import ghidra.program.model.listing.Function;
@@ -26,10 +25,10 @@ public class BulkProgramCorrelator extends VTAbstractProgramCorrelator {
 	private final String name;
 	private final FunctionBulker bulker;
 	
-	public BulkProgramCorrelator(ServiceProvider serviceProvider, Program sourceProgram,
+	public BulkProgramCorrelator(Program sourceProgram,
 			AddressSetView sourceAddressSet, Program destinationProgram, AddressSetView destinationAddressSet,
 			ToolOptions options, String name, FunctionBulker bulker) {
-		super(serviceProvider, sourceProgram, sourceAddressSet, destinationProgram,
+		super(sourceProgram, sourceAddressSet, destinationProgram,
 				destinationAddressSet, options);
 		this.name = name;
 		this.bulker = bulker;
