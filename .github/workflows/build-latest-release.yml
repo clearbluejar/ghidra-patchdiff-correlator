@@ -12,7 +12,7 @@ on:
 jobs:
 
   check-release:
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-latest
     outputs:
       ghidra-repo-release: ${{ steps.get_ghidra_ver.outputs.release }}
       ghidra-latest-ver: ${{ steps.format_ghidra_ver.outputs.ghidra_ver }}
